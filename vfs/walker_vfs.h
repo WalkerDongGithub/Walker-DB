@@ -42,7 +42,7 @@ struct walker_vfs {
 
 struct walker_file {
     walker_fd     fd;
-    walker_uint   file_size;
+    walker_uint64   file_size;
     walker_file_function* pFunction;
 };
 
@@ -54,10 +54,10 @@ struct walker_file {
  */
 struct walker_file_function {
     walker_status (*xClose)     (walker_file*);
-    walker_status (*xSet)       (walker_file*, walker_uint);
-    walker_status (*xAppend)    (walker_file*, walker_uint);
-    walker_status (*xRead)      (walker_file*, walker_ptr, walker_uint, walker_uint*);
-    walker_status (*xWrite)     (walker_file*, walker_ptr, walker_uint, walker_uint*);
+    walker_status (*xSet)       (walker_file*, walker_uint64);
+    walker_status (*xAppend)    (walker_file*, walker_uint64);
+    walker_status (*xRead)      (walker_file*, walker_ptr, walker_uint64, walker_uint64*);
+    walker_status (*xWrite)     (walker_file*, walker_ptr, walker_uint64, walker_uint64*);
     walker_status (*xSize)      (walker_file*);
 };
 
