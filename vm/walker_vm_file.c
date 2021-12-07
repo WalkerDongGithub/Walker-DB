@@ -38,20 +38,20 @@
  * @return          返回成功写入的数据字节数。
  */
 
-walker_uint walker_vm_write (
+walker_uint64 walker_vm_write (
         walker_file*        file,
         walker_page_id      page_id,
 
-        walker_uint         start,
+        walker_uint64         start,
         walker_const_ptr    buf,
-        walker_uint         len
+        walker_uint64         len
 ) {
 
     assert (start < walker_page_size);
     walker_file_function* f = file->pFunction;
 
     f->xSet(file, page_id * walker_page_size + start);
-    walker_uint num;
+    walker_uint64 num;
     walker_status status =
             f->xWrite(file, buf,
                       min(len, walker_page_size - start), &num);
@@ -81,19 +81,19 @@ walker_uint walker_vm_write (
  */
 
 
-walker_uint walker_vm_read (
+walker_uint64 walker_vm_read (
         walker_file*         file,
         walker_page_id       page_id,
 
-        walker_uint          start,
+        walker_uint64          start,
         walker_ptr           buf,
-        walker_uint          len
+        walker_uint64          len
 ) {
     assert(start < walker_page_size);
     walker_file_function* f = file->pFunction;
 
     f->xSet(file, page_id * walker_page_size + start);
-    walker_uint num;
+    walker_uint64 num;
     walker_status status =
             f->xRead(file, buf,
                      min(len, walker_page_size - start), &num);
@@ -122,7 +122,7 @@ walker_status walker_vm_set_next(
         walker_page_id  page_id,
         walker_page_id  next_num
 ) {
-    walker_uint count =
+    walker_uint64 count =
             walker_vm_write(file, page_id, 0, &next_num, walker_page_id_size);
     assert(count == walker_page_id_size);
     return walker_ok;
@@ -143,7 +143,7 @@ walker_page_id walker_vm_get_next(
         walker_page_id  page_id
 ) {
     walker_page_id next_num;
-    walker_uint count =
+    walker_uint64 count =
             walker_vm_read(file, page_id, 0, &next_num, walker_page_id_size);
     assert(count == walker_page_id_size);
     return next_num;
@@ -172,10 +172,10 @@ walker_status walker_vm_create_page(
  * @param file      需要获取页数的文件。
  * @return          获取到的页数。
  */
-walker_uint walker_vm_get_page_num(
+walker_uint64 walker_vm_get_page_num(
         walker_file* file
 ) {
-    walker_uint size = file->pFunction->xSize(file);
+    walker_uint64 size = file->pFunction->xSize(file);
     return size / walker_page_size + ((size % walker_page_size == 0) ? 0 : 1);
 }
 
@@ -234,6 +234,7 @@ walker_page_id walker_vm_get_empty_page(
  *
  * @param file      需要建表的文件
  * @return          文件系统的初始页面号。
+ * todo:            注意这个位置的write 的 start 实际一直指向首页的第三个8位上，这个地方是为了方便调试，并非bug
  */
 walker_page_id walker_vm_new_table(
         walker_file* file
@@ -262,11 +263,11 @@ walker_status walker_vm_write_all(
         walker_file*    file,
         walker_page_id  page_id,
         walker_ptr      buffer,
-        walker_uint     size
+        walker_uint64     size
 ) {
-    walker_uint i = 0;
+    walker_uint64 i = 0;
     while (i < size) {
-        walker_uint count =
+        walker_uint64 count =
                 walker_vm_write(file, page_id, walker_page_id_size, &buffer[i], size-i);
         printf("count : %d\n", count);
         if (i + count < size) {
