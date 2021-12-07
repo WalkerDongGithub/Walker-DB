@@ -22,7 +22,7 @@ static walker_status unix_vfs_close(
 
 static walker_status unix_vfs_set(
         walker_file* vfs_file,
-        walker_uint   pos
+        walker_uint64   pos
         ) {
     walker_status status = lseek(vfs_file->fd, pos, SEEK_SET);
     if (status == -1) {
@@ -33,7 +33,7 @@ static walker_status unix_vfs_set(
 
 static walker_status unix_vfs_append(
         walker_file* vfs_file,
-        walker_uint  num
+        walker_uint64  num
         ) {
     walker_status status = lseek(vfs_file->fd, 0, SEEK_END);
 
@@ -52,8 +52,8 @@ static walker_status unix_vfs_append(
 static walker_status unix_vfs_read(
         walker_file*   vfs_file,
         walker_ptr     buf,
-        walker_uint    num,
-        walker_uint*   count
+        walker_uint64    num,
+        walker_uint64*   count
         ) {
 
     int real_count = read(vfs_file->fd, buf, num);
@@ -69,8 +69,8 @@ static walker_status unix_vfs_read(
 static walker_status unix_vfs_write(
         walker_file*   vfs_file,
         walker_ptr     buf,
-        walker_uint    num,
-        walker_uint*   count
+        walker_uint64    num,
+        walker_uint64*   count
         ) {
     int real_count = write(vfs_file->fd, buf, num);
     if (real_count == -1) {
@@ -103,7 +103,7 @@ static walker_status unix_vfs_check_lock(
 static walker_status unix_vfs_size(
         walker_file* vfs_file
         ) {
-    walker_int size = lseek(vfs_file->fd, 0, SEEK_END);
+    walker_int64 size = lseek(vfs_file->fd, 0, SEEK_END);
     assert(size != -1);
     return size;
 }
@@ -115,9 +115,6 @@ static walker_file_function unix_vfs_file_function = {
         unix_vfs_read,
         unix_vfs_write,
         unix_vfs_lock,
-        unix_vfs_unlock,
-        unix_vfs_check_lock,
-        unix_vfs_size,
 };
 
 
@@ -146,8 +143,6 @@ static walker_status unix_vfs_open(
     pFile->fd = fd;
     pFile->pFunction   = &unix_vfs_file_function;
     pFile->file_size   = pFile->pFunction->xSize(pFile);
-    pFile->file_status = walker_ok;
-    pFile->path_name   = file_name;
 
     return walker_ok;
 }
@@ -155,7 +150,6 @@ static walker_status unix_vfs_open(
 
 walker_vfs walker_load_vfs(walker_status chance) {
     walker_vfs vfs;
-    vfs.vfs_name = "walker studio";
     vfs.xOpen    = unix_vfs_open;
     return vfs;
 }
