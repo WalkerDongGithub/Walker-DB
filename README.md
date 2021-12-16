@@ -10,3 +10,6 @@ Of course, the code is all about OS, not database, because I want to make my dat
 # 12/7/2021
 Upload the LRU Algorithm, which implements the base function of the LRU page replacement algorithm and passes the basis test.
 Hope that it doesn't have any bug.
+
+# 12/16/2021
+Update the names that don't keep in touch with the context.h.
