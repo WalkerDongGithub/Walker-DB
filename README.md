@@ -13,3 +13,11 @@ Hope that it doesn't have any bug.
 
 # 12/16/2021
 Update the names that don't keep in touch with the context.h.
+
+# 06/05/2022
+I'm back and begin to rebuild this project, thanks to the practice finishing, I want to refactor this project with C++,
+the code before is tidy but hard to code. Therefore, I would like to give up the simulation of the object-oriented via C program language, 
+using real object-oriented language C++ instead.
+
+By the way, the structure of the database is clear, but no code on Github, hahaha.
+Please waiting for my coding, wait.
